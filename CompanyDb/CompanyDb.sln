@@ -7,7 +7,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CompanyDb", "CompanyDb\Comp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyApp", "CompanyApp\CompanyApp.csproj", "{8B5FFFC6-F17C-41A7-A010-26862565DDC5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyAPI", "CompanyAPI\CompanyAPI.csproj", "{0FCB4117-7D2A-4077-A759-9ABE9EAAE565}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyAPI", "CompanyAPI\CompanyAPI.csproj", "{0FCB4117-7D2A-4077-A759-9ABE9EAAE565}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
