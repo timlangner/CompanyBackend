@@ -12,16 +12,11 @@ namespace CompanyAPI.Repository
 {
     public class CompanyRepository : IBaseInterface<Company, CompanyDto>
     {
-        string dbConStr = "";
+        string dbConStr = "Data Source=tappqa;Initial Catalog=Training-TN-Company;Integrated Security=True";
         string selectCmd = "select Id, Name, FoundedDate from viCompany";
         string spCreateCompany = "spCreateCompany";
         string spUpdateCompany = "spUpdateCompany";
         string spDeleteCompany = "spDeleteCompany";
-
-        public CompanyRepository(string dbConnectionStr)
-        {
-            dbConStr = dbConnectionStr;
-        }
 
         public List<Company> Read()
         {
