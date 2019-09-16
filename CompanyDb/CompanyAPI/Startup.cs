@@ -33,6 +33,7 @@ namespace CompanyAPI
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<IBaseInterface<Company, CompanyDto>, CompanyRepository>();
+            services.AddScoped<IBaseInterface<Department, DepartmentDto>, DepartmentRepository>();
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             
             services.AddSingleton<IDbContext, DbContext>();

@@ -56,6 +56,7 @@ namespace CompanyAPI.Repository
                 return 1 == sqlcon.Execute(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
             }
         }
+
         public bool Update(int id, CompanyDto companyDto)
         {
             Company retval = new Company();
@@ -75,11 +76,8 @@ namespace CompanyAPI.Repository
             {
                 Console.WriteLine(ex);
                 return false;
-            }
-
-            
+            }        
         }
-
 
         public bool Delete(int id = 0)
         {
