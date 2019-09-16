@@ -12,15 +12,23 @@ namespace CompanyAPI.Repository
 {
     public class CompanyRepository : IBaseInterface<Company, CompanyDto>
     {
+
+        private readonly IDbContext _dbContext;
+
         string dbConStr = "Data Source=tappqa;Initial Catalog=Training-TN-Company;Integrated Security=True";
-        string selectCmd = "select Id, Name, FoundedDate from viCompany";
+        string selectCmd = "SELECT Id, Name, FoundedDate FROM viCompany";
         string spCreateCompany = "spCreateCompany";
         string spUpdateCompany = "spUpdateCompany";
         string spDeleteCompany = "spDeleteCompany";
 
+        public CompanyRepository(IDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public List<Company> Read()
         {
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return sqlcon.Query<Company>(selectCmd).AsList();
             }
