@@ -14,8 +14,12 @@ namespace CompanyAPI.Controller
     [Route("/api/companies")]
     public class CompanyController : ControllerBase
     {
-        readonly IBaseInterface<Company, CompanyDto> 
-        _companyRepository = new CompanyRepository();
+        private readonly IBaseInterface<Company, CompanyDto> _companyRepository;
+
+        public CompanyController(IBaseInterface<Company, CompanyDto> companyRepository)
+        {
+            _companyRepository = companyRepository;
+        }
 
         // GET companies
         [HttpGet]
