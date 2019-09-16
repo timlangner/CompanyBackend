@@ -14,5 +14,6 @@ AS
 					@Name, 
 					@Description, 
 					@CompanyId
-				);
-RETURN 0
+				)
+
+SELECT SCOPE_IDENTITY();
