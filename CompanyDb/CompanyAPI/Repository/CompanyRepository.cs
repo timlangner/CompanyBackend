@@ -39,7 +39,7 @@ namespace CompanyAPI.Repository
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id", id);
 
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return sqlcon.QueryFirstOrDefault<Company>($"{selectCmd} WHERE Id = @id", parameters);
             }
@@ -51,7 +51,7 @@ namespace CompanyAPI.Repository
             parameters.Add("@CompanyName", companyDto.Name);
             parameters.Add("@FoundedDate", companyDto.FoundedDate);
 
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return 1 == sqlcon.Execute(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
             }
@@ -68,7 +68,7 @@ namespace CompanyAPI.Repository
 
             try
             {
-                using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+                using (var sqlcon = _dbContext.GetConnection())
                 {
                     return 1 == sqlcon.Execute(spUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
                 }
@@ -81,7 +81,7 @@ namespace CompanyAPI.Repository
 
         public bool Delete(int id = 0)
         {
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@DbId", id);
