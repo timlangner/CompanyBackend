@@ -12,20 +12,22 @@ namespace CompanyAPI.Repository
 {
     public class CompanyRepository : IBaseInterface<Company, CompanyDto>
     {
-        string dbConStr = "";
-        string selectCmd = "select Id, Name, FoundedDate from viCompany";
+
+        private readonly IDbContext _dbContext;
+
+        string selectCmd = "SELECT Id, Name, FoundedDate FROM viCompany";
         string spCreateCompany = "spCreateCompany";
         string spUpdateCompany = "spUpdateCompany";
         string spDeleteCompany = "spDeleteCompany";
 
-        public CompanyRepository(string dbConnectionStr)
+        public CompanyRepository(IDbContext dbContext)
         {
-            dbConStr = dbConnectionStr;
+            _dbContext = dbContext;
         }
 
         public List<Company> Read()
         {
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return sqlcon.Query<Company>(selectCmd).AsList();
             }
@@ -36,7 +38,7 @@ namespace CompanyAPI.Repository
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id", id);
 
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return sqlcon.QueryFirstOrDefault<Company>($"{selectCmd} WHERE Id = @id", parameters);
             }
@@ -48,11 +50,12 @@ namespace CompanyAPI.Repository
             parameters.Add("@CompanyName", companyDto.Name);
             parameters.Add("@FoundedDate", companyDto.FoundedDate);
 
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 return 1 == sqlcon.Execute(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
             }
         }
+
         public bool Update(int id, CompanyDto companyDto)
         {
             Company retval = new Company();
@@ -64,7 +67,7 @@ namespace CompanyAPI.Repository
 
             try
             {
-                using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+                using (var sqlcon = _dbContext.GetConnection())
                 {
                     return 1 == sqlcon.Execute(spUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
                 }
@@ -72,15 +75,12 @@ namespace CompanyAPI.Repository
             {
                 Console.WriteLine(ex);
                 return false;
-            }
-
-            
+            }        
         }
-
 
         public bool Delete(int id = 0)
         {
-            using (SqlConnection sqlcon = new SqlConnection(dbConStr))
+            using (var sqlcon = _dbContext.GetConnection())
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@DbId", id);

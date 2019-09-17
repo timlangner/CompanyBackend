@@ -83,6 +83,8 @@
     <Build Include="Stored Procedure\Company\spDeleteCompany.sql" />
     <Build Include="Stored Procedure\Employee\spDeleteEmployee.sql" />
     <Build Include="Stored Procedure\Company\spUpdateCompany.sql" />
+    <Build Include="Stored Procedure\Department\spUpdateDepartment.sql" />
+    <Build Include="Stored Procedure\Department\spDeleteDepartment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CompanyDb.publish.xml" />

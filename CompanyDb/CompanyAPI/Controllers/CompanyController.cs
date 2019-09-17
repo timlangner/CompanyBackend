@@ -14,14 +14,14 @@ namespace CompanyAPI.Controller
     [Route("/api/companies")]
     public class CompanyController : ControllerBase
     {
-        readonly IBaseInterface<Company, CompanyDto> _companyRepository;
+        private readonly IBaseInterface<Company, CompanyDto> _companyRepository;
 
-        public CompanyController()
+        public CompanyController(IBaseInterface<Company, CompanyDto> companyRepository)
         {
-            _companyRepository = new CompanyRepository("Data Source=tappqa;Initial Catalog=Training-TN-Company;Integrated Security=True");
+            _companyRepository = companyRepository;
         }
 
-        // GET companies
+        // GET api/companies/
         [HttpGet]
         public IActionResult GetCompanies()
         {
@@ -32,7 +32,7 @@ namespace CompanyAPI.Controller
             return Ok(_companyRepository.Read());
         }
 
-        // GET companies/1
+        // GET api/companies/1/
         [HttpGet("{id}")]
         public IActionResult GetCompany(int id)
         {
@@ -44,7 +44,7 @@ namespace CompanyAPI.Controller
             return Ok(_companyRepository.Read(id));
         }
 
-        // POST api/values
+        // POST api/companies/
         [HttpPost]
         public IActionResult PostCompany([FromBody] CompanyDto companyDto)
         {
@@ -58,12 +58,12 @@ namespace CompanyAPI.Controller
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        //PUT api/values/5
+        //PUT api/companies/5/
         [HttpPut("{id}")]
         public IActionResult PutCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
-            if (id >= 0)
+            if (id <= 0)
             {
                 return BadRequest();
             }
@@ -78,7 +78,7 @@ namespace CompanyAPI.Controller
             return StatusCode(StatusCodes.Status200OK);
         }
 
-        // DELETE api/values/5
+        // DELETE api/companies/2/
         [HttpDelete("{id}")]
         public IActionResult DeleteCompany(int id)
         {
