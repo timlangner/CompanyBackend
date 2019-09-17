@@ -56,5 +56,25 @@ namespace CompanyAPI.Controllers
 
             return StatusCode(StatusCodes.Status201Created);
         }
+
+        //PUT api/departments/2/
+        [HttpPut("{id}")]
+        public IActionResult UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
+        {
+            //Check if user put invalid requests
+            if (id >= 0)
+            {
+                return BadRequest();
+            }
+
+            bool retval = _departmentInterface.Update(id, _departmentInterface);
+
+            if (retval == false)
+            {
+                return Conflict();
+            }
+
+            return StatusCode(StatusCodes.Status200OK);
+        }
     }
 }
