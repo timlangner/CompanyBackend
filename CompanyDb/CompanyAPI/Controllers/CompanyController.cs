@@ -78,7 +78,7 @@ namespace CompanyAPI.Controller
             return StatusCode(StatusCodes.Status200OK);
         }
 
-        // DELETE api/companies/5/
+        // DELETE api/companies/2/
         [HttpDelete("{id}")]
         public IActionResult DeleteCompany(int id)
         {

@@ -76,5 +76,19 @@ namespace CompanyAPI.Controllers
 
             return StatusCode(StatusCodes.Status200OK);
         }
+
+        // DELETE api/departments/2/
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDepartment(int id)
+        {
+            bool retval = _departmentInterface.Delete(id);
+
+            if (retval == false)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent);
+        }
     }
 }
