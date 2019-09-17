@@ -51,9 +51,17 @@ namespace CompanyAPI.Repository
             parameters.Add("@Description", departmentDto.Description);
             parameters.Add("@CompanyId", departmentDto.CompanyId);
 
-            using (var sqlcon = _dbContext.GetConnection())
+            try
             {
-                return 1 == sqlcon.Execute(spCreateDepartment, parameters, commandType: CommandType.StoredProcedure);
+                using (var sqlcon = _dbContext.GetConnection())
+                {
+                    return 1 == sqlcon.Execute(spCreateDepartment, parameters, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                return false;
             }
         }
 
@@ -83,12 +91,20 @@ namespace CompanyAPI.Repository
 
         public bool Delete(int id = 0)
         {
-            using (var sqlcon = _dbContext.GetConnection())
-            {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@DbId", id);
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@DbId", id);
 
-                return 1 == sqlcon.Execute(spDeleteDepartment, parameters, commandType: CommandType.StoredProcedure);
+            try
+            {
+                using (var sqlcon = _dbContext.GetConnection())
+                {
+                    return 1 == sqlcon.Execute(spDeleteDepartment, parameters, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                return false;
             }
         }
     }
