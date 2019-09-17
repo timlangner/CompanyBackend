@@ -20,9 +20,9 @@ namespace CompanyAPI.Controllers
             _departmentInterface = departmentInterface;
         }
 
-        // GET departments
+        // GET api/departments/
         [HttpGet]
-        public IActionResult GetCompanies()
+        public IActionResult GetDepartments()
         {
             if (_departmentInterface.Read().Count == 0)
             {
@@ -31,9 +31,9 @@ namespace CompanyAPI.Controllers
             return Ok(_departmentInterface.Read());
         }
 
-        // GET companies/1
+        // GET api/departments/1/
         [HttpGet("{id}")]
-        public IActionResult GetCompany(int id)
+        public IActionResult GetDepartment(int id)
         {
             if (_departmentInterface.Read(id) == null)
             {
@@ -41,6 +41,20 @@ namespace CompanyAPI.Controllers
             }
 
             return Ok(_departmentInterface.Read(id));
+        }
+
+        // POST api/departments/
+        [HttpPost]
+        public IActionResult CreateDepartment([FromBody] DepartmentDto departmentDto)
+        {
+            bool retval = _departmentInterface.Create(departmentDto);
+
+            if (departmentDto == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }
