@@ -15,7 +15,6 @@ namespace CompanyAPI.Repository
 
         private readonly IDbContext _dbContext;
 
-        string dbConStr = "Data Source=tappqa;Initial Catalog=Training-TN-Company;Integrated Security=True";
         string selectCmd = "SELECT Id, Name, FoundedDate FROM viCompany";
         string spCreateCompany = "spCreateCompany";
         string spUpdateCompany = "spUpdateCompany";

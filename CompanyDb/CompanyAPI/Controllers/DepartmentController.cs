@@ -30,5 +30,17 @@ namespace CompanyAPI.Controllers
             }
             return Ok(_departmentInterface.Read());
         }
+
+        // GET companies/1
+        [HttpGet("{id}")]
+        public IActionResult GetCompany(int id)
+        {
+            if (_departmentInterface.Read(id) == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(_departmentInterface.Read(id));
+        }
     }
 }
