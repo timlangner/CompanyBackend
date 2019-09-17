@@ -63,7 +63,7 @@ namespace CompanyAPI.Controller
         public IActionResult PutCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
-            if (id >= 0)
+            if (id <= 0)
             {
                 return BadRequest();
             }

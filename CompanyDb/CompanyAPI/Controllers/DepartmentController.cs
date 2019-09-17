@@ -62,12 +62,12 @@ namespace CompanyAPI.Controllers
         public IActionResult UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
         {
             //Check if user put invalid requests
-            if (id >= 0)
+            if (id <= 0)
             {
                 return BadRequest();
             }
 
-            bool retval = _departmentInterface.Update(id, _departmentInterface);
+            bool retval = _departmentInterface.Update(id, departmentDto);
 
             if (retval == false)
             {
