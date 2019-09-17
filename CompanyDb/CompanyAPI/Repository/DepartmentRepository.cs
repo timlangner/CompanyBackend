@@ -60,7 +60,7 @@ namespace CompanyAPI.Repository
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"ERROR MESSAGE: ${ex}");
+                Console.WriteLine($"ERROR MESSAGE: {ex}");
                 return false;
             }
         }
@@ -84,7 +84,7 @@ namespace CompanyAPI.Repository
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"ERROR MESSAGE: ${ex}");
+                Console.WriteLine($"ERROR MESSAGE: {ex}");
                 return false;
             }
         }
