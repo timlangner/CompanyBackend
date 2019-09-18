@@ -85,12 +85,19 @@ namespace CompanyAPI.Repository
             {
                 throw new Helper.RepoException(Helper.RepoResultType.WRONGPARAMETER);
             }
-            using (var sqlcon = _dbContext.GetConnection())
+            try
             {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@DbId", id);
+                using (var sqlcon = _dbContext.GetConnection())
+                {
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@DbId", id);
 
-                return 1 == await sqlcon.ExecuteAsync(spDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Helper.RepoException(Helper.RepoResultType.SQLERROR);
             }
         }
 

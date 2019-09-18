@@ -50,9 +50,6 @@ namespace CompanyAPI.Controller
                 }
 
                 return Ok(_companyRepository.Read(id));
-            }catch(SqlException ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
             catch (Helper.RepoException repoEx)
             {
@@ -61,10 +58,17 @@ namespace CompanyAPI.Controller
                     case Helper.RepoResultType.SQLERROR:
                         _logger.LogError(repoEx.InnerException, repoEx.Message);
                         return StatusCode(StatusCodes.Status503ServiceUnavailable);
-                }
 
-                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+                    case Helper.RepoResultType.NOTFOUND:
+                        _logger.LogError(repoEx.InnerException, repoEx.Message);
+                        return StatusCode(StatusCodes.Status404NotFound);
+
+                    case Helper.RepoResultType.WRONGPARAMETER:
+                        _logger.LogError(repoEx.InnerException, repoEx.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest);
+                }
             }
+            return BadRequest();
         }
 
         // POST api/companies/
