@@ -29,6 +29,7 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
+
             var retval = await _companyRepository.Read();
             if (retval.Count() == 0)
             {
