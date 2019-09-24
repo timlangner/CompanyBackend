@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CompanyAPI.Middleware
 {
-    public class RepoExceptionMiddlewareExtensions
+    public static class RepoExceptionMiddlewareExtensions
     {
-        public void UseRepoExceptionMiddleware(this IApplicationBuilder app)
+        public static void UseRepoExceptionMiddleware(this IApplicationBuilder app)
         {
             app.UseMiddleware<RepoExceptionMiddleware>();
         }
