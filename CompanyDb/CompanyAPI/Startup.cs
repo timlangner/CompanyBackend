@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CompanyAPI.Helper;
 using CompanyAPI.Interface;
+using CompanyAPI.Middleware;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
 using CompanyAPI.Repository;
@@ -51,6 +52,7 @@ namespace CompanyAPI
                 app.UseHsts();
             }
 
+            app.UseRepoExceptionMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
