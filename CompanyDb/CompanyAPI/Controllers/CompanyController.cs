@@ -42,34 +42,13 @@ namespace CompanyAPI.Controller
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompany(int id)
         {
-            try
+            _logger.LogInformation($"Hello from {Request.Headers["User-Agent"]}");
+            if (await _companyRepository.Read(id) == null)
             {
-                _logger.LogInformation($"Hello from {Request.Headers["User-Agent"]}");
-                if (await _companyRepository.Read(id) == null)
-                {
-                    return NoContent();
-                }
-
-                return Ok(_companyRepository.Read(id));
+                return NoContent();
             }
-            catch (Helper.RepoException repoEx)
-            {
-                switch (repoEx.ExType)
-                {
-                    case Helper.RepoResultType.SQLERROR:
-                        _logger.LogError(repoEx.InnerException, repoEx.Message);
-                        return StatusCode(StatusCodes.Status503ServiceUnavailable);
 
-                    case Helper.RepoResultType.NOTFOUND:
-                        _logger.LogError(repoEx.InnerException, repoEx.Message);
-                        return StatusCode(StatusCodes.Status404NotFound);
-
-                    case Helper.RepoResultType.WRONGPARAMETER:
-                        _logger.LogError(repoEx.InnerException, repoEx.Message);
-                        return StatusCode(StatusCodes.Status400BadRequest);
-                }
-            }
-            return BadRequest();
+            return Ok(_companyRepository.Read(id));
         }
 
         // POST api/companies/
