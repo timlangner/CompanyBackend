@@ -10,6 +10,7 @@ using CompanyAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
+using CompanyAPI.Helper;
 
 namespace CompanyAPI.Controller
 {
@@ -29,7 +30,7 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
-
+            var user = Auth.GetUser(HttpContext);
             var retval = await _companyRepository.Read();
             if (retval.Count() == 0)
             {
@@ -42,13 +43,13 @@ namespace CompanyAPI.Controller
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompany(int id)
         {
-            _logger.LogInformation($"Hello from {Request.Headers["User-Agent"]}");
-            if (await _companyRepository.Read(id) == null)
+            var result = await _companyRepository.Read(id);
+            if (result == null)
             {
                 return NoContent();
             }
 
-            return Ok(_companyRepository.Read(id));
+            return Ok(result);
         }
 
         // POST api/companies/
