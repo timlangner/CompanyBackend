@@ -8,47 +8,75 @@ using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
 using CompanyAPI.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.Data.SqlClient;
 
 namespace CompanyAPI.Controller
 {
     [Route("/api/companies")]
     public class CompanyController : ControllerBase
     {
+        private readonly ILogger<CompanyController> _logger;
         private readonly IBaseInterface<Company, CompanyDto> _companyRepository;
 
-        public CompanyController(IBaseInterface<Company, CompanyDto> companyRepository)
+        public CompanyController(IBaseInterface<Company, CompanyDto> companyRepository, ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<CompanyController>();
             _companyRepository = companyRepository;
         }
 
         // GET api/companies/
         [HttpGet]
-        public IActionResult GetCompanies()
+        public async Task<IActionResult> GetCompanies()
         {
-            if (_companyRepository.Read().Count == 0)
+
+            var retval = await _companyRepository.Read();
+            if (retval.Count() == 0)
             {
                 return NoContent();
             }
-            return Ok(_companyRepository.Read());
+            return Ok(retval);
         }
 
         // GET api/companies/1/
         [HttpGet("{id}")]
-        public IActionResult GetCompany(int id)
+        public async Task<IActionResult> GetCompany(int id)
         {
-            if (_companyRepository.Read(id) == null)
+            try
             {
-                return NoContent();
-            }
+                _logger.LogInformation($"Hello from {Request.Headers["User-Agent"]}");
+                if (await _companyRepository.Read(id) == null)
+                {
+                    return NoContent();
+                }
 
-            return Ok(_companyRepository.Read(id));
+                return Ok(_companyRepository.Read(id));
+            }
+            catch (Helper.RepoException repoEx)
+            {
+                switch (repoEx.ExType)
+                {
+                    case Helper.RepoResultType.SQLERROR:
+                        _logger.LogError(repoEx.InnerException, repoEx.Message);
+                        return StatusCode(StatusCodes.Status503ServiceUnavailable);
+
+                    case Helper.RepoResultType.NOTFOUND:
+                        _logger.LogError(repoEx.InnerException, repoEx.Message);
+                        return StatusCode(StatusCodes.Status404NotFound);
+
+                    case Helper.RepoResultType.WRONGPARAMETER:
+                        _logger.LogError(repoEx.InnerException, repoEx.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest);
+                }
+            }
+            return BadRequest();
         }
 
         // POST api/companies/
         [HttpPost]
-        public IActionResult PostCompany([FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> PostCompany([FromBody] CompanyDto companyDto)
         {
-            bool retval = _companyRepository.Create(companyDto);
+            bool retval = await _companyRepository.Create(companyDto);
 
             if (companyDto == null)
             {
@@ -60,7 +88,7 @@ namespace CompanyAPI.Controller
 
         //PUT api/companies/5/
         [HttpPut("{id}")]
-        public IActionResult PutCompany(int id, [FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> PutCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
             if (id <= 0)
@@ -68,7 +96,7 @@ namespace CompanyAPI.Controller
                 return BadRequest();
             }
 
-            bool retval = _companyRepository.Update(id, companyDto);
+            bool retval = await _companyRepository.Update(id, companyDto);
 
             if (retval == false)
             {
@@ -80,9 +108,9 @@ namespace CompanyAPI.Controller
 
         // DELETE api/companies/2/
         [HttpDelete("{id}")]
-        public IActionResult DeleteCompany(int id)
+        public async Task<IActionResult> DeleteCompany(int id)
         {
-            bool retval = _companyRepository.Delete(id);
+            bool retval = await _companyRepository.Delete(id);
 
             if (retval == false)
             {

@@ -7,6 +7,7 @@ using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using Dapper;
 using CompanyAPI.Model.Dto;
+using System.Threading.Tasks;
 
 namespace CompanyAPI.Repository
 {
@@ -25,26 +26,26 @@ namespace CompanyAPI.Repository
             _dbContext = dbContext;
         }
 
-        public List<Company> Read()
+        public async Task<List<Company>> Read()
         {
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return sqlcon.Query<Company>(selectCmd).AsList();
+                return (await sqlcon.QueryAsync<Company>(selectCmd)).AsList();
             }
         }
 
-        public Company Read(int id)
+        public async Task<Company> Read(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id", id);
 
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return sqlcon.QueryFirstOrDefault<Company>($"{selectCmd} WHERE Id = @id", parameters);
+                return await sqlcon.QueryFirstOrDefaultAsync<Company>($"{selectCmd} WHERE Id = @id", parameters);
             }
         }
 
-        public bool Create(CompanyDto companyDto)
+        public async Task<bool> Create(CompanyDto companyDto)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@CompanyName", companyDto.Name);
@@ -52,11 +53,11 @@ namespace CompanyAPI.Repository
 
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return 1 == sqlcon.Execute(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
+                return  1 == await sqlcon.ExecuteAsync(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
-        public bool Update(int id, CompanyDto companyDto)
+        public async Task<bool> Update(int id, CompanyDto companyDto)
         {
             Company retval = new Company();
 
@@ -69,7 +70,7 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    return 1 == sqlcon.Execute(spUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
                 }
             } catch(SqlException ex)
             {
@@ -78,14 +79,25 @@ namespace CompanyAPI.Repository
             }        
         }
 
-        public bool Delete(int id = 0)
+        public async Task<bool> Delete(int id = 0)
         {
-            using (var sqlcon = _dbContext.GetConnection())
+            if (id < 0)
             {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@DbId", id);
+                throw new Helper.RepoException(Helper.RepoResultType.WRONGPARAMETER);
+            }
+            try
+            {
+                using (var sqlcon = _dbContext.GetConnection())
+                {
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@DbId", id);
 
-                return 1 == sqlcon.Execute(spDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Helper.RepoException(Helper.RepoResultType.SQLERROR);
             }
         }
 

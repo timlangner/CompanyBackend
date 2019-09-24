@@ -22,20 +22,22 @@ namespace CompanyAPI.Controllers
 
         // GET api/departments/
         [HttpGet]
-        public IActionResult GetDepartments()
+        public async Task<IActionResult> GetDepartments()
         {
-            if (_departmentInterface.Read().Count == 0)
+            var retval = await _departmentInterface.Read();
+
+            if (retval.Count == 0)
             {
                 return NoContent();
             }
-            return Ok(_departmentInterface.Read());
+            return Ok(retval);
         }
 
         // GET api/departments/1/
         [HttpGet("{id}")]
-        public IActionResult GetDepartment(int id)
+        public async Task<IActionResult> GetDepartment(int id)
         {
-            if (_departmentInterface.Read(id) == null)
+            if (await _departmentInterface.Read(id) == null)
             {
                 return NoContent();
             }
@@ -45,9 +47,9 @@ namespace CompanyAPI.Controllers
 
         // POST api/departments/
         [HttpPost]
-        public IActionResult CreateDepartment([FromBody] DepartmentDto departmentDto)
+        public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
-            bool retval = _departmentInterface.Create(departmentDto);
+            bool retval = await _departmentInterface.Create(departmentDto);
 
             if (departmentDto == null)
             {
@@ -59,7 +61,7 @@ namespace CompanyAPI.Controllers
 
         //PUT api/departments/2/
         [HttpPut("{id}")]
-        public IActionResult UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
+        public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
         {
             //Check if user put invalid requests
             if (id <= 0)
@@ -67,7 +69,7 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            bool retval = _departmentInterface.Update(id, departmentDto);
+            bool retval = await _departmentInterface.Update(id, departmentDto);
 
             if (retval == false)
             {
@@ -79,9 +81,9 @@ namespace CompanyAPI.Controllers
 
         // DELETE api/departments/2/
         [HttpDelete("{id}")]
-        public IActionResult DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment(int id)
         {
-            bool retval = _departmentInterface.Delete(id);
+            bool retval = await _departmentInterface.Delete(id);
 
             if (retval == false)
             {

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using CompanyAPI.Model;
 
 namespace CompanyAPI.Interface
 {
     public interface IBaseInterface<TModel, TModelDto>
     {
-        List<TModel> Read();
-        TModel Read(int id);
-        bool Create(TModelDto data);
-        bool Update(int id, TModelDto data);
-        bool Delete(int id);
+        Task<List<TModel>> Read();
+        Task<TModel> Read(int id);
+        Task<bool> Create(TModelDto data);
+        Task<bool> Update(int id, TModelDto data);
+        Task<bool> Delete(int id);
 
     }
 }
