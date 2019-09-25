@@ -72,9 +72,6 @@ namespace CompanyAPI.Controller
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
-
-
-
         }
 
         //PUT api/companies/5/
