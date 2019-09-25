@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CompanyAPI.Helper;
 
 namespace CompanyAPI.Controllers
 {
@@ -49,14 +50,22 @@ namespace CompanyAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
-            bool retval = await _departmentInterface.Create(departmentDto);
-
-            if (departmentDto == null)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
+                bool retval = await _departmentInterface.Create(departmentDto);
 
-            return StatusCode(StatusCodes.Status201Created);
+                if (departmentDto == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
 
         //PUT api/departments/2/
@@ -69,28 +78,44 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            bool retval = await _departmentInterface.Update(id, departmentDto);
-
-            if (retval == false)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return Conflict();
-            }
+                bool retval = await _departmentInterface.Update(id, departmentDto);
 
-            return StatusCode(StatusCodes.Status200OK);
+                if (retval == false)
+                {
+                    return Conflict();
+                }
+
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
 
         // DELETE api/departments/2/
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            bool retval = await _departmentInterface.Delete(id);
-
-            if (retval == false)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
+                bool retval = await _departmentInterface.Delete(id);
 
-            return StatusCode(StatusCodes.Status204NoContent);
+                if (retval == false)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
     }
 }
