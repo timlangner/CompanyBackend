@@ -47,7 +47,7 @@ namespace CompanyAPI.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "Request failed ver heavily");
+                _logger.LogCritical(ex, "Request failed heavily");
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
         }

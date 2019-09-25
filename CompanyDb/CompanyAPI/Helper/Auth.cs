@@ -62,8 +62,7 @@ namespace CompanyAPI.Helper
                             var jsonResponse = sr.ReadToEnd();
                             JObject DataObj = JObject.Parse(jsonResponse);
                             var uacGroups = DataObj["data"]["uacGroups"];
-                            var firstUACGroup = (int) uacGroups[0]["id"];
-                            Console.WriteLine(firstUACGroup);
+                            var firstUACGroup = (int)uacGroups[0]["id"];
 
                             return firstUACGroup == 1;
                         }
