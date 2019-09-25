@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using CompanyAPI.Helper;
 using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
-using CompanyAPI.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Data.SqlClient;
-using CompanyAPI.Helper;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CompanyAPI.Controller
+namespace CompanyAPI.Controllers
 {
-    [Route("/api/companies")]
-    public class CompanyController : ControllerBase
+    [Route("/api/employees")]
+    public class EmployeeController : ControllerBase
     {
-        private readonly ILogger<CompanyController> _logger;
-        private readonly IBaseInterface<Company, CompanyDto> _companyRepository;
+        private readonly ILogger<EmployeeController> _logger;
+        private readonly IBaseInterface<Employee, EmployeeDto> _employeeRepository;
 
-        public CompanyController(IBaseInterface<Company, CompanyDto> companyRepository, ILoggerFactory loggerFactory)
+        public EmployeeController(IBaseInterface<Employee, EmployeeDto> employeeRepository, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<CompanyController>();
-            _companyRepository = companyRepository;
+            _logger = loggerFactory.CreateLogger<EmployeeController>();
+            _employeeRepository = employeeRepository;
         }
 
-        // GET api/companies/
+        // GET api/employees/
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        public async Task<IActionResult> GetEmployees()
         {
-            var retval = await _companyRepository.Read();
+            var retval = await _employeeRepository.Read();
             if (retval.Count() == 0)
             {
                 return NoContent();
@@ -38,11 +37,11 @@ namespace CompanyAPI.Controller
             return Ok(retval);
         }
 
-        // GET api/companies/1/
+        // GET api/employees/1/
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompany(int id)
+        public async Task<IActionResult> GetEmployee(int id)
         {
-            var result = await _companyRepository.Read(id);
+            var result = await _employeeRepository.Read(id);
             if (result == null)
             {
                 return NoContent();
@@ -51,16 +50,16 @@ namespace CompanyAPI.Controller
             return Ok(result);
         }
 
-        // POST api/companies/
+        // POST api/employees/
         [HttpPost]
-        public async Task<IActionResult> CreateCompany([FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
             var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
             if (uacGroups)
             {
-                bool retval = await _companyRepository.Create(companyDto);
+                bool retval = await _employeeRepository.Create(employeeDto);
 
-                if (companyDto == null)
+                if (employeeDto == null)
                 {
                     return StatusCode(StatusCodes.Status400BadRequest);
                 }
@@ -73,9 +72,9 @@ namespace CompanyAPI.Controller
             }
         }
 
-        //PUT api/companies/5/
+        //PUT api/employees/5/
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
         {
             //Check if user put invalid requests
             if (id <= 0)
@@ -86,7 +85,7 @@ namespace CompanyAPI.Controller
             var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
             if (uacGroups)
             {
-                bool retval = await _companyRepository.Update(id, companyDto);
+                bool retval = await _employeeRepository.Update(id, employeeDto);
 
                 if (retval == false)
                 {
@@ -99,17 +98,16 @@ namespace CompanyAPI.Controller
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
-
         }
 
-        // DELETE api/companies/2/
+        // DELETE api/employees/2/
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompany(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
             var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
             if (uacGroups)
             {
-                bool retval = await _companyRepository.Delete(id);
+                bool retval = await _employeeRepository.Delete(id);
 
                 if (retval == false)
                 {

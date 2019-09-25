@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Text;
 using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using Dapper;
@@ -20,6 +19,7 @@ namespace CompanyAPI.Repository
         string spCreateCompany = "spCreateCompany";
         string spUpdateCompany = "spUpdateCompany";
         string spDeleteCompany = "spDeleteCompany";
+        private object loggerFactory;
 
         public CompanyRepository(IDbContext dbContext)
         {
