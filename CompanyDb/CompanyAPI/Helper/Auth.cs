@@ -17,7 +17,6 @@ namespace CompanyAPI.Helper
             {
                 var authheaderStr = httpContext.Request.Headers["Authorization"].ToString();
                 var payload64str = authheaderStr.Substring("Bearer ".Length).Trim().Split(".")[1];
-<<<<<<< HEAD
 
                 byte[] temp = null;
                 try
@@ -37,9 +36,6 @@ namespace CompanyAPI.Helper
                 catch (Exception) { }
                 var payloadstr = System.Text.Encoding.ASCII.GetString(temp);
 
-=======
-                var payloadstr = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(payload64str));
->>>>>>> authorization
                 retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.Payload>(payloadstr);
             }
 
