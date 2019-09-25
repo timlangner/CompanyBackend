@@ -17,5 +17,17 @@ namespace CompanyAPI.Middleware
             _next = next;
             _logger = logger.CreateLogger<RepoExceptionMiddleware>();
         }
+
+        public async Task Invoke(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

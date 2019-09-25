@@ -8,10 +8,10 @@ namespace CompanyAPI.Helper
 {
     public class Auth
     {
-        public static Model.Payload GetUser(HttpContext httpContext)
+        public static Model.ChaynsUser GetUser(HttpContext httpContext)
         {
             string authheader = httpContext.Request.Headers["Authorization"];
-            Model.Payload retval = new Model.Payload();
+            Model.ChaynsUser retval = new Model.ChaynsUser();
 
             if (authheader != null)
             {
@@ -26,14 +26,19 @@ namespace CompanyAPI.Helper
                 var payloadstr = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(payload64Str));
 
 
-                retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.Payload>(payloadstr);
+                retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.ChaynsUser>(payloadstr);
             }
             return retval;
         }
 
         public static bool GetUACGroupFromSite(HttpContext httpContext)
         {
-            string token = httpContext.Request.Headers["Authorization"].ToString() ;
+            string token = httpContext.Request.Headers["Authorization"];
+
+            if (token != null)
+            {
+                token.ToString();
+            }
 
             const string url = "https://chaynssvc.tobit.com/v0.5/164986/user/";
             try
@@ -52,9 +57,13 @@ namespace CompanyAPI.Helper
                             var jsonResponse = sr.ReadToEnd();
                             JObject DataObj = JObject.Parse(jsonResponse);
                             var uacGroups = DataObj["data"]["uacGroups"];
-                            var firstUACGroup = (int)uacGroups[0]["id"];
 
-                            return firstUACGroup == 1;
+                            if (uacGroups != null)
+                            {
+                                var firstUACGroup = (int)uacGroups[0]["id"];
+                                return firstUACGroup == 1;
+                            }
+
                         }
                     }
                 }

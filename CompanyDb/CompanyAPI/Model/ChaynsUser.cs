@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CompanyAPI.Model
 {
-    public class Payload
+    public class ChaynsUser
     {
         public string jti { get; set; }
         public string sub { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chayns.Auth.ApiExtensions;
 using CompanyAPI.Helper;
 using CompanyAPI.Interface;
 using CompanyAPI.Middleware;
@@ -56,6 +57,7 @@ namespace CompanyAPI
             app.UseRepoExceptionMiddleware();
             app.UseAuthorizationMiddleware();
             app.UseHttpsRedirection();
+            //app.InitChaynsAuth();
             app.UseMvc();
             
         }

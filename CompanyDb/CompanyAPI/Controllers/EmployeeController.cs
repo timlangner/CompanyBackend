@@ -5,15 +5,17 @@ using CompanyAPI.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chayns.Auth.ApiExtensions;
+using Chayns.Auth.Shared.Constants;
 
 namespace CompanyAPI.Controllers
 {
     [Route("/api/employees")]
+    //[ChaynsAuth(uac: Uac.Manager)]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> _logger;
@@ -64,10 +66,12 @@ namespace CompanyAPI.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest);
                 }
 
+                _logger.LogInformation("Employee created.");
                 return StatusCode(StatusCodes.Status201Created);
             }
             else
             {
+                _logger.LogError("Invalid Authorization Header");
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }
@@ -79,6 +83,7 @@ namespace CompanyAPI.Controllers
             //Check if user put invalid requests
             if (id <= 0)
             {
+                _logger.LogInformation("Invalid request. The ID is smaller or equal zero.");
                 return BadRequest();
             }
 
@@ -92,10 +97,12 @@ namespace CompanyAPI.Controllers
                     return Conflict();
                 }
 
+                _logger.LogInformation("Employee updated.");
                 return StatusCode(StatusCodes.Status200OK);
             }
             else
             {
+                _logger.LogError("Invalid Authorization Header");
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }
@@ -114,10 +121,12 @@ namespace CompanyAPI.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest);
                 }
 
+                _logger.LogInformation("Employee deleted.");
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             else
             {
+                _logger.LogError("Invalid Authorization Header");
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }
