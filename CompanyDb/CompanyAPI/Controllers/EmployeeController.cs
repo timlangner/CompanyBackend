@@ -1,6 +1,8 @@
-﻿using CompanyAPI.Interface;
+﻿using CompanyAPI.Helper;
+using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -45,6 +47,28 @@ namespace CompanyAPI.Controllers
             }
 
             return Ok(result);
+        }
+
+        // POST api/employees/
+        [HttpPost]
+        public async Task<IActionResult> PostCompany([FromBody] EmployeeDto employeeDto)
+        {
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
+            {
+                bool retval = await _employeeRepository.Create(employeeDto);
+
+                if (employeeDto == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
 
     }

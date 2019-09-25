@@ -19,7 +19,6 @@ namespace CompanyAPI.Repository
         string spCreateEmployee = "spCreateEmployee";
         string spUpdateEmployee = "spCreateOrUpdateEmployee";
         string spDeleteEmployee = "spDeleteEmployee";
-        private object loggerFactory;
 
         public EmployeeRepository(IDbContext dbContext)
         {
