@@ -30,13 +30,13 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
-            var user = Auth.GetUser(HttpContext);
             var retval = await _companyRepository.Read();
             if (retval.Count() == 0)
             {
                 return NoContent();
             }
             return Ok(retval);
+            
         }
 
         // GET api/companies/1/
@@ -56,14 +56,25 @@ namespace CompanyAPI.Controller
         [HttpPost]
         public async Task<IActionResult> PostCompany([FromBody] CompanyDto companyDto)
         {
-            bool retval = await _companyRepository.Create(companyDto);
-
-            if (companyDto == null)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                bool retval = await _companyRepository.Create(companyDto);
+
+                if (companyDto == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            return StatusCode(StatusCodes.Status201Created);
+
+
         }
 
         //PUT api/companies/5/
@@ -76,28 +87,45 @@ namespace CompanyAPI.Controller
                 return BadRequest();
             }
 
-            bool retval = await _companyRepository.Update(id, companyDto);
-
-            if (retval == false)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return Conflict();
+                bool retval = await _companyRepository.Update(id, companyDto);
+
+                if (retval == false)
+                {
+                    return Conflict();
+                }
+
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            return StatusCode(StatusCodes.Status200OK);
         }
 
         // DELETE api/companies/2/
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            bool retval = await _companyRepository.Delete(id);
-
-            if (retval == false)
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
+                bool retval = await _companyRepository.Delete(id);
 
-            return StatusCode(StatusCodes.Status204NoContent);
+                if (retval == false)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
     }
 }
