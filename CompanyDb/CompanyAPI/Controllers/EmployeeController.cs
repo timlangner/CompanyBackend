@@ -51,7 +51,7 @@ namespace CompanyAPI.Controllers
 
         // POST api/employees/
         [HttpPost]
-        public async Task<IActionResult> PostCompany([FromBody] EmployeeDto employeeDto)
+        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
             var user = Auth.GetUser(HttpContext);
             if (user.TobitUserID == 2105910)
@@ -64,6 +64,56 @@ namespace CompanyAPI.Controllers
                 }
 
                 return StatusCode(StatusCodes.Status201Created);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+        }
+
+        //PUT api/employees/5/
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
+        {
+            //Check if user put invalid requests
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
+            {
+                bool retval = await _employeeRepository.Update(id, employeeDto);
+
+                if (retval == false)
+                {
+                    return Conflict();
+                }
+
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+        }
+
+        // DELETE api/employees/2/
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEmployee(int id)
+        {
+            var user = Auth.GetUser(HttpContext);
+            if (user.TobitUserID == 2105910)
+            {
+                bool retval = await _employeeRepository.Delete(id);
+
+                if (retval == false)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             else
             {

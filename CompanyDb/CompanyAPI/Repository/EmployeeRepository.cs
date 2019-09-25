@@ -64,7 +64,7 @@ namespace CompanyAPI.Repository
             Employee retval = new Employee();
 
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@DbId", id);
+            parameters.Add("@EmployeeId", id);
             parameters.Add("@FirstName", employeeDto.FirstName);
             parameters.Add("@LastName", employeeDto.LastName);
             parameters.Add("@Birthdate", employeeDto.Birthdate);
@@ -96,7 +96,7 @@ namespace CompanyAPI.Repository
                 using (var sqlcon = _dbContext.GetConnection())
                 {
                     DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@DbId", id);
+                    parameters.Add("@Id", id);
 
                     return 1 == await sqlcon.ExecuteAsync(spDeleteEmployee, parameters, commandType: CommandType.StoredProcedure);
                 }

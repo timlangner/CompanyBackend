@@ -3,7 +3,8 @@
     @FirstName nvarchar(128), 
     @LastName nvarchar(128), 
     @Birthdate date, 
-    @DepartmentId int 
+    @DepartmentId int,
+	@AdressId int
 AS 
 
       declare @dbId int = (select id from viEmployee where id = @EmployeeId) 
@@ -14,9 +15,10 @@ AS
            ([FirstName] 
            ,[LastName] 
            ,[Birthdate]
-           ,[DepartmentId]) 
+           ,[DepartmentId]
+		   ,[AdressId]) 
              VALUES 
-                     (@FirstName,@LastName,@Birthdate,@DepartmentId) 
+                     (@FirstName,@LastName,@Birthdate,@DepartmentId, @AdressId) 
 
             set @dbId = @@IDENTITY 
       end 
@@ -24,7 +26,11 @@ AS
       begin 
             update  [dbo].[Employee] set 
                         FirstName = case when @FirstName is null then FirstName else @FirstName end, 
-                        LastName = @LastName 
+                        LastName = @LastName,
+						Birthdate = @Birthdate,
+						DepartmentId = @DepartmentId,
+						AdressId = @AdressId
+
 			where id = @dbId
       end 
 

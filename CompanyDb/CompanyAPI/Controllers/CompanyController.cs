@@ -54,7 +54,7 @@ namespace CompanyAPI.Controller
 
         // POST api/companies/
         [HttpPost]
-        public async Task<IActionResult> PostCompany([FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyDto companyDto)
         {
             var user = Auth.GetUser(HttpContext);
             if (user.TobitUserID == 2105910)
@@ -76,7 +76,7 @@ namespace CompanyAPI.Controller
 
         //PUT api/companies/5/
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, [FromBody] CompanyDto companyDto)
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
             if (id <= 0)
