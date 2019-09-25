@@ -16,25 +16,15 @@ namespace CompanyAPI.Helper
             if (authheader != null)
             {
                 var authheaderStr = httpContext.Request.Headers["Authorization"].ToString();
-                var payload64str = authheaderStr.Substring("Bearer ".Length).Trim().Split(".")[1];
+                var payload64Str = authheader.Split(" ")[1].Trim().Split(".")[1].Trim();
 
-                byte[] temp = null;
-                try
+                while (payload64Str.Length % 4 != 0)
                 {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/'));
+                    payload64Str += "=";
                 }
-                catch (Exception) { }
-                try
-                {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/') + "=");
-                }
-                catch (Exception) { }
-                try
-                {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/') + "==");
-                }
-                catch (Exception) { }
-                var payloadstr = System.Text.Encoding.ASCII.GetString(temp);
+
+                var payloadstr = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(payload64Str));
+
 
                 retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.Payload>(payloadstr);
             }
