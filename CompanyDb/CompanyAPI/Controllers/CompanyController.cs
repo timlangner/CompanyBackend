@@ -30,6 +30,10 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
+<<<<<<< HEAD
+=======
+            var user = Auth.GetUser(HttpContext);
+>>>>>>> authorization
             var retval = await _companyRepository.Read();
             if (retval.Count() == 0)
             {

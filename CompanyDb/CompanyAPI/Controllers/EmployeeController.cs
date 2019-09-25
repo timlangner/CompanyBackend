@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using CompanyAPI.Helper;
 using CompanyAPI.Interface;
 using CompanyAPI.Model;
@@ -5,6 +6,9 @@ using CompanyAPI.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+=======
+﻿using Microsoft.AspNetCore.Mvc;
+>>>>>>> authorization
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +19,7 @@ namespace CompanyAPI.Controllers
     [Route("/api/employees")]
     public class EmployeeController : ControllerBase
     {
+<<<<<<< HEAD
         private readonly ILogger<EmployeeController> _logger;
         private readonly IBaseInterface<Employee, EmployeeDto> _employeeRepository;
 
@@ -121,5 +126,7 @@ namespace CompanyAPI.Controllers
             }
         }
 
+=======
+>>>>>>> authorization
     }
 }
