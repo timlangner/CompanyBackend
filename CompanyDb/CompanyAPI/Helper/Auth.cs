@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace CompanyAPI.Helper
 {
@@ -38,9 +38,44 @@ namespace CompanyAPI.Helper
 
                 retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.Payload>(payloadstr);
             }
-
-
             return retval;
+        }
+
+        public static bool GetUACGroupFromSite(HttpContext httpContext)
+        {
+            string token = httpContext.Request.Headers["Authorization"].ToString() ;
+
+            const string url = "https://chaynssvc.tobit.com/v0.5/164986/user/";
+            try
+            {
+                var webRequest = WebRequest.Create(url);
+                if (webRequest != null)
+                {
+                    webRequest.Method = "GET";
+                    webRequest.Timeout = 20000;
+                    webRequest.ContentType = "application/json";
+                    webRequest.Headers.Add("Authorization", token);
+                    using (Stream s = webRequest.GetResponse().GetResponseStream())
+                    {
+                        using (StreamReader sr = new StreamReader(s))
+                        {
+                            var jsonResponse = sr.ReadToEnd();
+                            JObject DataObj = JObject.Parse(jsonResponse);
+                            var uacGroups = DataObj["data"]["uacGroups"];
+                            var firstUACGroup = (int) uacGroups[0]["id"];
+                            Console.WriteLine(firstUACGroup);
+
+                            return firstUACGroup == 1;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return false;
         }
     }
 }

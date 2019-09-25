@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿using CompanyAPI.Helper;
 using CompanyAPI.Interface;
 using CompanyAPI.Model;
@@ -6,9 +5,7 @@ using CompanyAPI.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-=======
 ﻿using Microsoft.AspNetCore.Mvc;
->>>>>>> authorization
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +16,6 @@ namespace CompanyAPI.Controllers
     [Route("/api/employees")]
     public class EmployeeController : ControllerBase
     {
-<<<<<<< HEAD
         private readonly ILogger<EmployeeController> _logger;
         private readonly IBaseInterface<Employee, EmployeeDto> _employeeRepository;
 
@@ -58,8 +54,8 @@ namespace CompanyAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _employeeRepository.Create(employeeDto);
 
@@ -86,8 +82,8 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _employeeRepository.Update(id, employeeDto);
 
@@ -108,8 +104,8 @@ namespace CompanyAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _employeeRepository.Delete(id);
 
@@ -125,8 +121,5 @@ namespace CompanyAPI.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }
-
-=======
->>>>>>> authorization
     }
 }

@@ -50,8 +50,8 @@ namespace CompanyAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _departmentInterface.Create(departmentDto);
 
@@ -78,8 +78,8 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _departmentInterface.Update(id, departmentDto);
 
@@ -100,8 +100,8 @@ namespace CompanyAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _departmentInterface.Delete(id);
 

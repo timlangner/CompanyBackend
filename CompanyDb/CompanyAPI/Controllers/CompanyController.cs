@@ -30,17 +30,12 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
-<<<<<<< HEAD
-=======
-            var user = Auth.GetUser(HttpContext);
->>>>>>> authorization
             var retval = await _companyRepository.Read();
             if (retval.Count() == 0)
             {
                 return NoContent();
             }
             return Ok(retval);
-            
         }
 
         // GET api/companies/1/
@@ -60,8 +55,8 @@ namespace CompanyAPI.Controller
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyDto companyDto)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _companyRepository.Create(companyDto);
 
@@ -88,8 +83,8 @@ namespace CompanyAPI.Controller
                 return BadRequest();
             }
 
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _companyRepository.Update(id, companyDto);
 
@@ -111,8 +106,8 @@ namespace CompanyAPI.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            var user = Auth.GetUser(HttpContext);
-            if (user.TobitUserID == 2105910)
+            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
+            if (uacGroups)
             {
                 bool retval = await _companyRepository.Delete(id);
 
