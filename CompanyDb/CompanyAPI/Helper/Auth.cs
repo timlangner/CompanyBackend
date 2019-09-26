@@ -11,12 +11,12 @@ namespace CompanyAPI.Helper
         public static Model.ChaynsUser GetUser(HttpContext httpContext)
         {
             string authheader = httpContext.Request.Headers["Authorization"];
-            Model.ChaynsUser retval = new Model.ChaynsUser();
+            var retval = new Model.ChaynsUser();
 
             if (authheader != null)
             {
-                var authheaderStr = httpContext.Request.Headers["Authorization"].ToString();
-                var payload64Str = authheader.Split(" ")[1].Trim().Split(".")[1].Trim();
+                var authheaderStr = authheader.ToString();
+                var payload64Str = authheaderStr.Split(" ")[1].Trim().Split(".")[1].Trim();
 
                 while (payload64Str.Length % 4 != 0)
                 {
@@ -55,13 +55,13 @@ namespace CompanyAPI.Helper
                         using (StreamReader sr = new StreamReader(s))
                         {
                             var jsonResponse = sr.ReadToEnd();
-                            JObject DataObj = JObject.Parse(jsonResponse);
-                            var uacGroups = DataObj["data"]["uacGroups"];
+                            var dataObj = JObject.Parse(jsonResponse);
+                            var uacGroups = dataObj["data"]["uacGroups"];
 
                             if (uacGroups != null)
                             {
-                                var firstUACGroup = (int)uacGroups[0]["id"];
-                                return firstUACGroup == 1;
+                                var firstUacGroup = (int)uacGroups[0]["id"];
+                                return firstUacGroup == 1;
                             }
 
                         }

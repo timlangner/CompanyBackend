@@ -56,7 +56,7 @@ namespace CompanyAPI.Controllers
         [ChaynsAuth]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
-            bool retval = await _employeeRepository.Create(employeeDto);
+            await _employeeRepository.Create(employeeDto);
 
             if (employeeDto == null)
             {
