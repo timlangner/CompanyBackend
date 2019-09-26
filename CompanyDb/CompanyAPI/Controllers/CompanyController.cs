@@ -10,6 +10,7 @@ using CompanyAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
+using Chayns.Auth.ApiExtensions;
 using CompanyAPI.Helper;
 
 namespace CompanyAPI.Controller
@@ -53,28 +54,22 @@ namespace CompanyAPI.Controller
 
         // POST api/companies/
         [HttpPost]
+        [ChaynsAuth]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyDto companyDto)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _companyRepository.Create(companyDto);
+            await _companyRepository.Create(companyDto);
 
-                if (companyDto == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            else
+            if (companyDto == null)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         //PUT api/companies/5/
         [HttpPut("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
@@ -83,45 +78,30 @@ namespace CompanyAPI.Controller
                 return BadRequest();
             }
 
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _companyRepository.Update(id, companyDto);
+            bool retval = await _companyRepository.Update(id, companyDto);
 
-                if (retval == false)
-                {
-                    return Conflict();
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            else
+            if (retval == false)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return Conflict();
             }
+
+            return StatusCode(StatusCodes.Status200OK);
 
         }
 
         // DELETE api/companies/2/
         [HttpDelete("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _companyRepository.Delete(id);
+            bool retval = await _companyRepository.Delete(id);
 
-                if (retval == false)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status204NoContent);
-            }
-            else
+            if (retval == false)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            return StatusCode(StatusCodes.Status204NoContent);
         }
     }
 }

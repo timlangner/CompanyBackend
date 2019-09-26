@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chayns.Auth.ApiExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CompanyAPI.Helper;
@@ -48,28 +49,22 @@ namespace CompanyAPI.Controllers
 
         // POST api/departments/
         [HttpPost]
+        [ChaynsAuth]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _departmentInterface.Create(departmentDto);
+            bool retval = await _departmentInterface.Create(departmentDto);
 
-                if (departmentDto == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            else
+            if (departmentDto == null)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         //PUT api/departments/2/
         [HttpPut("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
         {
             //Check if user put invalid requests
@@ -77,11 +72,7 @@ namespace CompanyAPI.Controllers
             {
                 return BadRequest();
             }
-
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _departmentInterface.Update(id, departmentDto);
+            bool retval = await _departmentInterface.Update(id, departmentDto);
 
                 if (retval == false)
                 {
@@ -89,20 +80,13 @@ namespace CompanyAPI.Controllers
                 }
 
                 return StatusCode(StatusCodes.Status200OK);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
         }
 
         // DELETE api/departments/2/
         [HttpDelete("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
                 bool retval = await _departmentInterface.Delete(id);
 
                 if (retval == false)
@@ -111,11 +95,6 @@ namespace CompanyAPI.Controllers
                 }
 
                 return StatusCode(StatusCodes.Status204NoContent);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
         }
     }
 }
