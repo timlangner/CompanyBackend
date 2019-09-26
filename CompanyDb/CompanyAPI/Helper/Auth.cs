@@ -8,42 +8,37 @@ namespace CompanyAPI.Helper
 {
     public class Auth
     {
-        public static Model.Payload GetUser(HttpContext httpContext)
+        public static Model.ChaynsUser GetUser(HttpContext httpContext)
         {
             string authheader = httpContext.Request.Headers["Authorization"];
-            Model.Payload retval = new Model.Payload();
+            var retval = new Model.ChaynsUser();
 
             if (authheader != null)
             {
-                var authheaderStr = httpContext.Request.Headers["Authorization"].ToString();
-                var payload64str = authheaderStr.Substring("Bearer ".Length).Trim().Split(".")[1];
+                var authheaderStr = authheader.ToString();
+                var payload64Str = authheaderStr.Split(" ")[1].Trim().Split(".")[1].Trim();
 
-                byte[] temp = null;
-                try
+                while (payload64Str.Length % 4 != 0)
                 {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/'));
+                    payload64Str += "=";
                 }
-                catch (Exception) { }
-                try
-                {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/') + "=");
-                }
-                catch (Exception) { }
-                try
-                {
-                    temp = Convert.FromBase64String(payload64str.Replace('-', '+').Replace('_', '/') + "==");
-                }
-                catch (Exception) { }
-                var payloadstr = System.Text.Encoding.ASCII.GetString(temp);
 
-                retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.Payload>(payloadstr);
+                var payloadstr = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(payload64Str));
+
+
+                retval = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.ChaynsUser>(payloadstr);
             }
             return retval;
         }
 
         public static bool GetUACGroupFromSite(HttpContext httpContext)
         {
-            string token = httpContext.Request.Headers["Authorization"].ToString() ;
+            string token = httpContext.Request.Headers["Authorization"];
+
+            if (token != null)
+            {
+                token.ToString();
+            }
 
             const string url = "https://chaynssvc.tobit.com/v0.5/164986/user/";
             try
@@ -60,11 +55,15 @@ namespace CompanyAPI.Helper
                         using (StreamReader sr = new StreamReader(s))
                         {
                             var jsonResponse = sr.ReadToEnd();
-                            JObject DataObj = JObject.Parse(jsonResponse);
-                            var uacGroups = DataObj["data"]["uacGroups"];
-                            var firstUACGroup = (int)uacGroups[0]["id"];
+                            var dataObj = JObject.Parse(jsonResponse);
+                            var uacGroups = dataObj["data"]["uacGroups"];
 
-                            return firstUACGroup == 1;
+                            if (uacGroups != null)
+                            {
+                                var firstUacGroup = (int)uacGroups[0]["id"];
+                                return firstUacGroup == 1;
+                            }
+
                         }
                     }
                 }

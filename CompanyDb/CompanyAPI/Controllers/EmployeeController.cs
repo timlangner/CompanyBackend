@@ -5,11 +5,12 @@ using CompanyAPI.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chayns.Auth.ApiExtensions;
+using Chayns.Auth.Shared.Constants;
 
 namespace CompanyAPI.Controllers
 {
@@ -52,74 +53,57 @@ namespace CompanyAPI.Controllers
 
         // POST api/employees/
         [HttpPost]
+        [ChaynsAuth]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Create(employeeDto);
+            await _employeeRepository.Create(employeeDto);
 
-                if (employeeDto == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            else
+            if (employeeDto == null)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            _logger.LogInformation("Employee created.");
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         //PUT api/employees/5/
         [HttpPut("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
         {
             //Check if user put invalid requests
             if (id <= 0)
             {
+                _logger.LogInformation("Invalid request. The ID is smaller or equal zero.");
                 return BadRequest();
             }
 
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Update(id, employeeDto);
+            bool retval = await _employeeRepository.Update(id, employeeDto);
 
-                if (retval == false)
-                {
-                    return Conflict();
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            else
+            if (retval == false)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return Conflict();
             }
+
+            _logger.LogInformation("Employee updated.");
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         // DELETE api/employees/2/
         [HttpDelete("{id}")]
+        [ChaynsAuth]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Delete(id);
+            bool retval = await _employeeRepository.Delete(id);
 
-                if (retval == false)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status204NoContent);
-            }
-            else
+            if (retval == false)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            _logger.LogInformation("Employee deleted.");
+            return StatusCode(StatusCodes.Status204NoContent);
         }
     }
 }
