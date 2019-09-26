@@ -53,7 +53,7 @@ namespace CompanyAPI.Controllers
 
         // POST api/employees/
         [HttpPost]
-        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
+        [ChaynsAuth]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
             bool retval = await _employeeRepository.Create(employeeDto);
@@ -69,7 +69,7 @@ namespace CompanyAPI.Controllers
 
         //PUT api/employees/5/
         [HttpPut("{id}")]
-        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
+        [ChaynsAuth]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
         {
             //Check if user put invalid requests
@@ -92,7 +92,7 @@ namespace CompanyAPI.Controllers
 
         // DELETE api/employees/2/
         [HttpDelete("{id}")]
-        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
+        [ChaynsAuth]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             bool retval = await _employeeRepository.Delete(id);
