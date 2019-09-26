@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chayns.Auth.ApiExtensions;
+using Chayns.Auth.Shared.Constants;
 using CompanyAPI.Helper;
 using CompanyAPI.Interface;
+using CompanyAPI.Middleware;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
 using CompanyAPI.Repository;
@@ -30,10 +33,15 @@ namespace CompanyAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddMvc(options => 
+            {
+                options.Filters.Add(new ChaynsAuthAttribute(true, uac: Uac.Manager, uacSiteId: "77893-11922"));
+                
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddChaynsAuth();
             services.AddScoped<IBaseInterface<Company, CompanyDto>, CompanyRepository>();
             services.AddScoped<IBaseInterface<Department, DepartmentDto>, DepartmentRepository>();
+            services.AddScoped<IBaseInterface<Employee, EmployeeDto>, EmployeeRepository>();
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             
             services.AddSingleton<IDbContext, DbContext>();
@@ -51,8 +59,12 @@ namespace CompanyAPI
                 app.UseHsts();
             }
 
+            app.UseRepoExceptionMiddleware();
+            //app.UseAuthorizationMiddleware();
             app.UseHttpsRedirection();
+            app.InitChaynsAuth();
             app.UseMvc();
+            
         }
     }
 }

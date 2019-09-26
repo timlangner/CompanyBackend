@@ -25,7 +25,7 @@ namespace CompanyAPI.Repository
             _dbContext = dbContext;
         }
 
-        public List<Department> Read()
+        public async Task<List<Department>> Read()
         {
             using (var sqlcon = _dbContext.GetConnection())
             {
@@ -33,18 +33,18 @@ namespace CompanyAPI.Repository
             }
         }
 
-        public Department Read(int id)
+        public async Task<Department> Read(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id", id);
 
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return sqlcon.QueryFirstOrDefault<Department>($"{selectCmd} WHERE Id = @id", parameters);
+                return await sqlcon.QueryFirstOrDefaultAsync<Department>($"{selectCmd} WHERE Id = @id", parameters);
             }
         }
 
-        public bool Create(DepartmentDto departmentDto)
+        public async Task<bool> Create(DepartmentDto departmentDto)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@Name", departmentDto.Name);
@@ -55,7 +55,7 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    return 1 == sqlcon.Execute(spCreateDepartment, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spCreateDepartment, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
             catch (SqlException ex)
@@ -65,7 +65,7 @@ namespace CompanyAPI.Repository
             }
         }
 
-        public bool Update(int id, DepartmentDto departmentDto)
+        public async Task<bool> Update(int id, DepartmentDto departmentDto)
         {
             Department retval = new Department();
 
@@ -79,7 +79,7 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    return 1 == sqlcon.Execute(spUpdateDepartment, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spUpdateDepartment, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
             catch (SqlException ex)
@@ -89,7 +89,7 @@ namespace CompanyAPI.Repository
             }
         }
 
-        public bool Delete(int id = 0)
+        public async Task<bool> Delete(int id = 0)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@DbId", id);
@@ -98,7 +98,7 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    return 1 == sqlcon.Execute(spDeleteDepartment, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(spDeleteDepartment, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
             catch (SqlException ex)
