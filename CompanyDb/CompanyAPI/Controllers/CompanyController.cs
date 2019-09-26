@@ -53,8 +53,7 @@ namespace CompanyAPI.Controller
         }
 
         // POST api/companies/
-        [HttpPost]
-        [ChaynsAuth]
+        [HttpPost, ChaynsAuth]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyDto companyDto)
         {
             await _companyRepository.Create(companyDto);
@@ -68,8 +67,7 @@ namespace CompanyAPI.Controller
         }
 
         //PUT api/companies/5/
-        [HttpPut("{id}")]
-        [ChaynsAuth]
+        [HttpPut("{id}"), ChaynsAuth]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyDto companyDto)
         {
             //Check if user put invalid requests
@@ -90,8 +88,7 @@ namespace CompanyAPI.Controller
         }
 
         // DELETE api/companies/2/
-        [HttpDelete("{id}")]
-        [ChaynsAuth]
+        [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteCompany(int id)
         {
             bool retval = await _companyRepository.Delete(id);

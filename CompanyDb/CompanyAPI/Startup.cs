@@ -18,6 +18,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CompanyAPI.Helper;
+using CompanyAPI.Provider;
+using Microsoft.AspNetCore.Http;
 
 namespace CompanyAPI
 {
@@ -33,11 +36,11 @@ namespace CompanyAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => 
-            {
-                options.Filters.Add(new ChaynsAuthAttribute(true, uac: Uac.Manager, uacSiteId: "77893-11922"));
-                
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddChaynsAuth(typeof(TokenRequirementProvider));
+
+            // Add some other services
+            services.AddMvc();
+
             services.AddChaynsAuth();
             services.AddScoped<IBaseInterface<Company, CompanyDto>, CompanyRepository>();
             services.AddScoped<IBaseInterface<Department, DepartmentDto>, DepartmentRepository>();
@@ -60,7 +63,7 @@ namespace CompanyAPI
             }
 
             app.UseRepoExceptionMiddleware();
-            //app.UseAuthorizationMiddleware();
+
             app.UseHttpsRedirection();
             app.InitChaynsAuth();
             app.UseMvc();

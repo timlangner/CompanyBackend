@@ -14,7 +14,8 @@ using Chayns.Auth.Shared.Constants;
 
 namespace CompanyAPI.Controllers
 {
-    [Route("/api/employees")]
+    [ChaynsAuth(true, uac: Uac.Manager)]
+    [Route("/api/{locationId}/employees")]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> _logger;
@@ -52,8 +53,7 @@ namespace CompanyAPI.Controllers
         }
 
         // POST api/employees/
-        [HttpPost]
-        [ChaynsAuth]
+        [HttpPost, ChaynsAuth]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
             await _employeeRepository.Create(employeeDto);
@@ -68,8 +68,7 @@ namespace CompanyAPI.Controllers
         }
 
         //PUT api/employees/5/
-        [HttpPut("{id}")]
-        [ChaynsAuth]
+        [HttpPut("{id}"), ChaynsAuth]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
         {
             //Check if user put invalid requests
@@ -91,8 +90,7 @@ namespace CompanyAPI.Controllers
         }
 
         // DELETE api/employees/2/
-        [HttpDelete("{id}")]
-        [ChaynsAuth]
+        [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             bool retval = await _employeeRepository.Delete(id);

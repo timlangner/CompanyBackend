@@ -48,8 +48,7 @@ namespace CompanyAPI.Controllers
         }
 
         // POST api/departments/
-        [HttpPost]
-        [ChaynsAuth]
+        [HttpPost, ChaynsAuth]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
             bool retval = await _departmentInterface.Create(departmentDto);
@@ -63,8 +62,7 @@ namespace CompanyAPI.Controllers
         }
 
         //PUT api/departments/2/
-        [HttpPut("{id}")]
-        [ChaynsAuth]
+        [HttpPut("{id}"), ChaynsAuth]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentDto departmentDto)
         {
             //Check if user put invalid requests
@@ -83,8 +81,7 @@ namespace CompanyAPI.Controllers
         }
 
         // DELETE api/departments/2/
-        [HttpDelete("{id}")]
-        [ChaynsAuth]
+        [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
                 bool retval = await _departmentInterface.Delete(id);
