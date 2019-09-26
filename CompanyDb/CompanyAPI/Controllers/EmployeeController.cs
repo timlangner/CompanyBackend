@@ -15,7 +15,6 @@ using Chayns.Auth.Shared.Constants;
 namespace CompanyAPI.Controllers
 {
     [Route("/api/employees")]
-    //[ChaynsAuth(uac: Uac.Manager)]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> _logger;
@@ -54,30 +53,23 @@ namespace CompanyAPI.Controllers
 
         // POST api/employees/
         [HttpPost]
+        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Create(employeeDto);
+            bool retval = await _employeeRepository.Create(employeeDto);
 
-                if (employeeDto == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                _logger.LogInformation("Employee created.");
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            else
+            if (employeeDto == null)
             {
-                _logger.LogError("Invalid Authorization Header");
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            _logger.LogInformation("Employee created.");
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         //PUT api/employees/5/
         [HttpPut("{id}")]
+        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] EmployeeDto employeeDto)
         {
             //Check if user put invalid requests
@@ -87,48 +79,31 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Update(id, employeeDto);
+            bool retval = await _employeeRepository.Update(id, employeeDto);
 
-                if (retval == false)
-                {
-                    return Conflict();
-                }
-
-                _logger.LogInformation("Employee updated.");
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            else
+            if (retval == false)
             {
-                _logger.LogError("Invalid Authorization Header");
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return Conflict();
             }
+
+            _logger.LogInformation("Employee updated.");
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         // DELETE api/employees/2/
         [HttpDelete("{id}")]
+        [ChaynsAuth(uac: Uac.Manager, uacSiteId: "77893-11922")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var uacGroups = Auth.GetUACGroupFromSite(HttpContext);
-            if (uacGroups)
-            {
-                bool retval = await _employeeRepository.Delete(id);
+            bool retval = await _employeeRepository.Delete(id);
 
-                if (retval == false)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                _logger.LogInformation("Employee deleted.");
-                return StatusCode(StatusCodes.Status204NoContent);
-            }
-            else
+            if (retval == false)
             {
-                _logger.LogError("Invalid Authorization Header");
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            _logger.LogInformation("Employee deleted.");
+            return StatusCode(StatusCodes.Status204NoContent);
         }
     }
 }

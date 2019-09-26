@@ -33,7 +33,7 @@ namespace CompanyAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddChaynsAuth();
             services.AddScoped<IBaseInterface<Company, CompanyDto>, CompanyRepository>();
             services.AddScoped<IBaseInterface<Department, DepartmentDto>, DepartmentRepository>();
             services.AddScoped<IBaseInterface<Employee, EmployeeDto>, EmployeeRepository>();
@@ -55,9 +55,9 @@ namespace CompanyAPI
             }
 
             app.UseRepoExceptionMiddleware();
-            app.UseAuthorizationMiddleware();
+            //app.UseAuthorizationMiddleware();
             app.UseHttpsRedirection();
-            //app.InitChaynsAuth();
+            app.InitChaynsAuth();
             app.UseMvc();
             
         }
