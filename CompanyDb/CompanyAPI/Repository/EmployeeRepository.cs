@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CompanyAPI.Repository
@@ -46,7 +45,7 @@ namespace CompanyAPI.Repository
 
         public async Task<bool> Create(EmployeeDto employeeDto)
         {
-            DynamicParameters parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
             parameters.Add("@FirstName", employeeDto.FirstName);
             parameters.Add("@LastName", employeeDto.LastName);
             parameters.Add("@Birthdate", employeeDto.Birthdate);
@@ -61,8 +60,6 @@ namespace CompanyAPI.Repository
 
         public async Task<bool> Update(int id, EmployeeDto employeeDto)
         {
-            Employee retval = new Employee();
-
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@EmployeeId", id);
             parameters.Add("@FirstName", employeeDto.FirstName);
@@ -95,13 +92,13 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    DynamicParameters parameters = new DynamicParameters();
+                    var parameters = new DynamicParameters();
                     parameters.Add("@Id", id);
 
                     return 1 == await sqlcon.ExecuteAsync(spDeleteEmployee, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 throw new Helper.RepoException(Helper.RepoResultType.SQLERROR);
             }

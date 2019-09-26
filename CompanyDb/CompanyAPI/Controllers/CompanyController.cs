@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
-using CompanyAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Data.SqlClient;
 using Chayns.Auth.ApiExtensions;
-using CompanyAPI.Helper;
 
 namespace CompanyAPI.Controller
 {
@@ -32,7 +27,7 @@ namespace CompanyAPI.Controller
         public async Task<IActionResult> GetCompanies()
         {
             var retval = await _companyRepository.Read();
-            if (retval.Count() == 0)
+            if (!retval.Any())
             {
                 return NoContent();
             }
@@ -58,12 +53,7 @@ namespace CompanyAPI.Controller
         {
             await _companyRepository.Create(companyDto);
 
-            if (companyDto == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
-
-            return StatusCode(StatusCodes.Status201Created);
+            return StatusCode(companyDto == null ? StatusCodes.Status400BadRequest : StatusCodes.Status201Created);
         }
 
         //PUT api/companies/5/
@@ -76,29 +66,18 @@ namespace CompanyAPI.Controller
                 return BadRequest();
             }
 
-            bool retval = await _companyRepository.Update(id, companyDto);
+            var retval = await _companyRepository.Update(id, companyDto);
 
-            if (retval == false)
-            {
-                return Conflict();
-            }
-
-            return StatusCode(StatusCodes.Status200OK);
-
+            return retval == false ? Conflict() : StatusCode(StatusCodes.Status200OK);
         }
 
         // DELETE api/companies/2/
         [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            bool retval = await _companyRepository.Delete(id);
+            var retval = await _companyRepository.Delete(id);
 
-            if (retval == false)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
-
-            return StatusCode(StatusCodes.Status204NoContent);
+            return StatusCode(retval == false ? StatusCodes.Status400BadRequest : StatusCodes.Status204NoContent);
         }
     }
 }

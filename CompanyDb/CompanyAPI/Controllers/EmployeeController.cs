@@ -1,12 +1,9 @@
-﻿using CompanyAPI.Helper;
-using CompanyAPI.Interface;
+﻿using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Chayns.Auth.ApiExtensions;
@@ -32,7 +29,7 @@ namespace CompanyAPI.Controllers
         public async Task<IActionResult> GetEmployees()
         {
             var retval = await _employeeRepository.Read();
-            if (retval.Count() == 0)
+            if (!retval.Any())
             {
                 return NoContent();
             }
@@ -78,7 +75,7 @@ namespace CompanyAPI.Controllers
                 return BadRequest();
             }
 
-            bool retval = await _employeeRepository.Update(id, employeeDto);
+            var retval = await _employeeRepository.Update(id, employeeDto);
 
             if (retval == false)
             {
@@ -93,7 +90,7 @@ namespace CompanyAPI.Controllers
         [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            bool retval = await _employeeRepository.Delete(id);
+            var retval = await _employeeRepository.Delete(id);
 
             if (retval == false)
             {

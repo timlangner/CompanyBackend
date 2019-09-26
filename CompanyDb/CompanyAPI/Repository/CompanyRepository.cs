@@ -15,53 +15,54 @@ namespace CompanyAPI.Repository
 
         private readonly IDbContext _dbContext;
 
-        string selectCmd = "SELECT Id, Name, FoundedDate FROM viCompany";
-        string spCreateCompany = "spCreateCompany";
-        string spUpdateCompany = "spUpdateCompany";
-        string spDeleteCompany = "spDeleteCompany";
-        private object loggerFactory;
+        private const string SelectCmd = "SELECT Id, Name, FoundedDate FROM viCompany";
+        private const string SpCreateCompany = "spCreateCompany";
+        private const string SpUpdateCompany = "spUpdateCompany";
+        private const string SpDeleteCompany = "spDeleteCompany";
+        private object _loggerFactory;
 
-        public CompanyRepository(IDbContext dbContext)
+        public CompanyRepository(IDbContext dbContext, object loggerFactory)
         {
             _dbContext = dbContext;
+            _loggerFactory = loggerFactory;
         }
 
         public async Task<List<Company>> Read()
         {
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return (await sqlcon.QueryAsync<Company>(selectCmd)).AsList();
+                return (await sqlcon.QueryAsync<Company>(SelectCmd)).AsList();
             }
         }
 
         public async Task<Company> Read(int id)
         {
-            DynamicParameters parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
             parameters.Add("@id", id);
 
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return await sqlcon.QueryFirstOrDefaultAsync<Company>($"{selectCmd} WHERE Id = @id", parameters);
+                return await sqlcon.QueryFirstOrDefaultAsync<Company>($"{SelectCmd} WHERE Id = @id", parameters);
             }
         }
 
         public async Task<bool> Create(CompanyDto companyDto)
         {
-            DynamicParameters parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
             parameters.Add("@CompanyName", companyDto.Name);
             parameters.Add("@FoundedDate", companyDto.FoundedDate);
 
             using (var sqlcon = _dbContext.GetConnection())
             {
-                return  1 == await sqlcon.ExecuteAsync(spCreateCompany, parameters, commandType: CommandType.StoredProcedure);
+                return  1 == await sqlcon.ExecuteAsync(SpCreateCompany, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
         public async Task<bool> Update(int id, CompanyDto companyDto)
         {
-            Company retval = new Company();
+            var retval = new Company();
 
-            DynamicParameters parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
             parameters.Add("@DbId", id);
             parameters.Add("@CompanyName", companyDto.Name);
             parameters.Add("@FoundedDate", companyDto.FoundedDate);
@@ -70,7 +71,7 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    return 1 == await sqlcon.ExecuteAsync(spUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(SpUpdateCompany, parameters, commandType: CommandType.StoredProcedure);
                 }
             } catch(SqlException ex)
             {
@@ -89,13 +90,13 @@ namespace CompanyAPI.Repository
             {
                 using (var sqlcon = _dbContext.GetConnection())
                 {
-                    DynamicParameters parameters = new DynamicParameters();
+                    var parameters = new DynamicParameters();
                     parameters.Add("@DbId", id);
 
-                    return 1 == await sqlcon.ExecuteAsync(spDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
+                    return 1 == await sqlcon.ExecuteAsync(SpDeleteCompany, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 throw new Helper.RepoException(Helper.RepoResultType.SQLERROR);
             }

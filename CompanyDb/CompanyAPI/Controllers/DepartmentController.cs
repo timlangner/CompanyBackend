@@ -1,14 +1,10 @@
 ﻿using CompanyAPI.Interface;
 using CompanyAPI.Model;
 using CompanyAPI.Model.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Chayns.Auth.ApiExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using CompanyAPI.Helper;
 
 namespace CompanyAPI.Controllers
 {
@@ -51,14 +47,9 @@ namespace CompanyAPI.Controllers
         [HttpPost, ChaynsAuth]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDto departmentDto)
         {
-            bool retval = await _departmentInterface.Create(departmentDto);
+            await _departmentInterface.Create(departmentDto);
 
-            if (departmentDto == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
-
-            return StatusCode(StatusCodes.Status201Created);
+            return StatusCode(departmentDto == null ? StatusCodes.Status400BadRequest : StatusCodes.Status201Created);
         }
 
         //PUT api/departments/2/
@@ -70,28 +61,18 @@ namespace CompanyAPI.Controllers
             {
                 return BadRequest();
             }
-            bool retval = await _departmentInterface.Update(id, departmentDto);
+            var retval = await _departmentInterface.Update(id, departmentDto);
 
-                if (retval == false)
-                {
-                    return Conflict();
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
+                return retval == false ? Conflict() : StatusCode(StatusCodes.Status200OK);
         }
 
         // DELETE api/departments/2/
         [HttpDelete("{id}"), ChaynsAuth]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-                bool retval = await _departmentInterface.Delete(id);
+                var retval = await _departmentInterface.Delete(id);
 
-                if (retval == false)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
-
-                return StatusCode(StatusCodes.Status204NoContent);
+                return StatusCode(retval == false ? StatusCodes.Status400BadRequest : StatusCodes.Status204NoContent);
         }
     }
 }

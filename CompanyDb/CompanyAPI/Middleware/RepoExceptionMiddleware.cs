@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CompanyAPI.Helper;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -39,6 +36,8 @@ namespace CompanyAPI.Middleware
                         break;
                     case RepoResultType.WRONGPARAMETER:
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case RepoResultType.NOCONTENT:
                         break;
                     default:
                         context.Response.StatusCode = (int)HttpStatusCode.Conflict;

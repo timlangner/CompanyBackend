@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using CompanyAPI.Model;
 
 namespace CompanyAPI.Interface
 {
-    public interface IBaseInterface<TModel, TModelDto>
+    public interface IBaseInterface<TModel, in TModelDto>
     {
         Task<List<TModel>> Read();
         Task<TModel> Read(int id);

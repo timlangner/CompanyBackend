@@ -28,10 +28,7 @@ namespace CompanyAPI.Provider
             // Schema of api is /api/{locationId}/[controller]
             var locationIdString = pathParts[1];
 
-            if (int.TryParse(locationIdString, out var locationId))
-                return Task.FromResult((int?)locationId);
-
-            return Task.FromResult(default(int?));
+            return int.TryParse(locationIdString, out var locationId) ? Task.FromResult((int?)locationId) : Task.FromResult(default(int?));
         }
 
         /// <summary>
